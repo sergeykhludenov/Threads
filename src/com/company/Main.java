@@ -3,14 +3,17 @@ package com.company;
 import javax.swing.plaf.TableHeaderUI;
 
     public class Main {
+        // Введите время
+        public static final int TIME = 20;
 
         public static void main(String[] args) {
 
             Seconds seconds = new Seconds();
             Chrono chrono = new Chrono(seconds);
             FiveSeconds fiveSeconds = new FiveSeconds(seconds);
-            new Thread(chrono).start();
             new Thread(fiveSeconds).start();
+            new Thread(chrono).start();
+
         }
 
     static class Seconds {
@@ -23,7 +26,7 @@ import javax.swing.plaf.TableHeaderUI;
                     e.printStackTrace();
                 }
             }
-
+            timer = timer - 5;
             System.out.println("Второй поток: прошло 5 секунд");
             notify();
         }
@@ -35,6 +38,7 @@ import javax.swing.plaf.TableHeaderUI;
                     e.printStackTrace();
                 }
             }
+            System.out.println("Первый поток: прошла 1 секунда");
             timer++;
             notify();
         }
@@ -47,10 +51,9 @@ import javax.swing.plaf.TableHeaderUI;
             this.seconds = seconds;
         }
         public void run() {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < Main.TIME; i++) {
                 try {
                     Thread.sleep(1000);
-                    System.out.println("Первый поток: прошла 1 секунда");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -65,7 +68,7 @@ import javax.swing.plaf.TableHeaderUI;
             this.seconds = seconds;
         }
         public void run() {
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < Main.TIME / 5; i++) {
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
