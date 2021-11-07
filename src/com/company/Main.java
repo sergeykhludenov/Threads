@@ -1,83 +1,35 @@
 package com.company;
 
-import javax.swing.plaf.TableHeaderUI;
-
-    public class Main {
+public class Main {
         // Введите время
-        public static final int TIME = 20;
+        public static final int TIME = 10;
 
         public static void main(String[] args) {
 
-            Seconds seconds = new Seconds();
-            Chrono chrono = new Chrono(seconds);
-            FiveSeconds fiveSeconds = new FiveSeconds(seconds);
-            new Thread(fiveSeconds).start();
+            Chrono chrono = new Chrono();
+            PeriodicSeconds oneSeconds = new PeriodicSeconds(chrono, 1);
+            PeriodicSeconds fiveSeconds = new PeriodicSeconds(chrono, 5);
+            PeriodicSeconds sevenSeconds = new PeriodicSeconds(chrono, 7);
+            Thread t1 = new Thread(oneSeconds);
+            t1.setName("Первый поток");
+            t1.start();
+            Thread t2 = new Thread(fiveSeconds);
+            t2.setName("Второй поток");
+            t2.start();
+            Thread t3 = new Thread(sevenSeconds);
+            t3.setName("Третий поток");
+            t3.start();
             new Thread(chrono).start();
 
+
+
         }
 
-    static class Seconds {
-        private int timer = 0;
-        public synchronized void get() {
-            while ((timer != 5)){
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            timer = timer - 5;
-            System.out.println("Второй поток: прошло 5 секунд");
-            notify();
-        }
-        public synchronized void put() {
-            while (timer == 5) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            System.out.println("Первый поток: прошла 1 секунда");
-            timer++;
-            notify();
-        }
-    }
 
-    static class Chrono implements Runnable {
 
-        Seconds seconds;
-        Chrono(Seconds seconds) {
-            this.seconds = seconds;
-        }
-        public void run() {
-            for (int i = 0; i < Main.TIME; i++) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                seconds.put();
-            }
-        }
-    }
 
-    static class FiveSeconds implements Runnable {
-        Seconds seconds;
-        FiveSeconds(Seconds seconds) {
-            this.seconds = seconds;
-        }
-        public void run() {
-            for (int i = 0; i < Main.TIME / 5; i++) {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                seconds.get();
-            }
-        }
-    }
+
+
 }
         // Попытка 1
 //        Thread thread1 = new Thread() {
